@@ -13,6 +13,7 @@ A fast, concurrent HTTP load testing CLI written in Go. Distribute N requests ac
 - [Parameters](#parameters)
 - [Running Locally](#running-locally)
 - [Running with Docker](#running-with-docker)
+- [Makefile](#makefile)
 - [Report Example](#report-example)
 - [Building the Docker Image](#building-the-docker-image)
 
@@ -22,8 +23,9 @@ A fast, concurrent HTTP load testing CLI written in Go. Distribute N requests ac
 
 `stresstest` is a command-line tool for load testing HTTP services. You specify a target URL, a total number of requests, and a concurrency level — the tool distributes the work, executes all requests, and prints a summary report with timing and HTTP status code distribution.
 
-```
-docker run henriquem/stresstest --url=http://example.com --requests=1000 --concurrency=10
+```bash
+docker build -t stresstest .
+docker run stresstest --url=http://example.com --requests=1000 --concurrency=10
 ```
 
 ---
@@ -137,7 +139,7 @@ Filling a buffered channel of size N with N tickets before starting workers mean
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-user>/stresstest.git
+git clone https://github.com/henriqueMontalione/stresstest.git
 cd stresstest
 
 # Run directly
@@ -151,12 +153,6 @@ go build -o stresstest ./cmd/stresstest
 ---
 
 ## Running with Docker
-
-### Pull and run (when published)
-
-```bash
-docker run henriquem/stresstest --url=http://google.com --requests=1000 --concurrency=10
-```
 
 ### Build and run locally
 
@@ -175,6 +171,22 @@ When the target service runs on your host machine, use `host.docker.internal` in
 ```bash
 docker run stresstest --url=http://host.docker.internal:8080 --requests=500 --concurrency=20
 ```
+
+---
+
+## Makefile
+
+Common commands available via `make`:
+
+| Command | Description |
+|---|---|
+| `make build` | Compile the binary to `./stresstest` |
+| `make run ARGS="--url=http://... --requests=100 --concurrency=10"` | Run without building |
+| `make test` | Run all unit tests |
+| `make lint` | Run `go vet` and `go build` |
+| `make docker-build` | Build the Docker image |
+| `make docker-run ARGS="--url=http://... --requests=100 --concurrency=10"` | Run via Docker |
+| `make clean` | Remove the compiled binary |
 
 ---
 
@@ -220,6 +232,6 @@ docker build -t stresstest .
 To tag for Docker Hub:
 
 ```bash
-docker build -t <your-dockerhub-user>/stresstest:latest .
-docker push <your-dockerhub-user>/stresstest:latest
+docker build -t henriqueMontalione/stresstest:latest .
+docker push henriqueMontalione/stresstest:latest
 ```
